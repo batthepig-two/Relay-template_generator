@@ -1,2 +1,30 @@
-# mc-cluster-finder-ui
-Web UI for MC Block Finder — build copy-pasteable commands
+# MC Cluster Finder UI
+
+Web UI for [MC Block Finder](https://github.com/batthepig-two/MC-block-finder) — build copy-pasteable commands for the CLI tool.
+
+**[Open the tool →](https://batthepig-two.github.io/mc-cluster-finder-ui/)**
+
+## What it does
+
+Pick your seed, Minecraft version, and one or more search steps (block + search radius + cluster radius). The page generates the exact command to run in your terminal.
+
+All 222 blocks from `blocks.c` are included, grouped by category, with dimension (overworld/nether/end) and Y-range shown.
+
+## Install the CLI
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Batthepig-two/MC-block-finder/main/install.sh -o install.sh
+sh install.sh
+cd MC-block-finder
+```
+
+Works on macOS, Linux, and [a-Shell](https://holzschu.github.io/a-Shell_iOS/) (iOS).
+
+## Development
+
+```sh
+pnpm install
+pnpm dev
+```
+
+Built with React + Vite + Tailwind CSS. The `docs/` folder is the GitHub Pages build.
