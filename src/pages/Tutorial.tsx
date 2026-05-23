@@ -2,7 +2,8 @@ import { useState } from "react";
 
 type FieldKey =
   | "seed" | "version" | "center" | "initial_radius"
-  | "block" | "search_radius" | "cluster_radius" | "steps";
+  | "block" | "search_radius" | "cluster_radius" | "steps"
+  | "sort" | "progress";
 
 const EXPLANATIONS: Record<FieldKey, { title: string; body: string; example?: string }> = {
   seed: {
@@ -45,6 +46,16 @@ const EXPLANATIONS: Record<FieldKey, { title: string; body: string; example?: st
     body: "Steps are how you chain multiple searches together to zero in on a specific combination of blocks.\n\nStep 1 scans the whole initial radius to find locations where Block A's biome conditions are met.\nStep 2 takes those hits and searches around each one for Block B.\nStep 3 takes those hits and searches for Block C. And so on.\n\nEach step narrows the results. You might get 500 hits in Step 1, 80 in Step 2, and 5 in Step 3 — those 5 are where all three blocks can co-generate.",
     example: "Classic combo: diamond_ore → emerald_ore → ancient_debris\nThis finds spots where overworld diamonds and emeralds are accessible near a nether portal that leads to ancient debris.",
   },
+  sort: {
+    title: "Sort Order  (-O, -D)",
+    body: "Controls how the final list of coordinates is ordered.\n\n• x — sort by X coordinate (west→east)\n• z — sort by Z coordinate (north→south)\n• dist — sort by distance from your center point, closest first\n\nAdd -D to reverse any sort (e.g. farthest first, largest X, etc.).\n\nWithout -O the results are printed in the order they were found — roughly scanning west→east, north→south.",
+    example: "-O dist        → closest hits first\n-O dist -D     → farthest hits first\n-O x           → left-to-right (west→east)\n-O z -D        → south→north",
+  },
+  progress: {
+    title: "Progress Bar",
+    body: "While the CLI is scanning, it shows a live progress bar so you can see how far along each step is:\n\n[###########-------------------]  37%  128 hits found\n\nThe bar fills as biome rows are scanned. The hit count updates in real time. When a step finishes, it prints the total hits found on its own line before moving to the next step.",
+    example: "A large initial radius (e.g. -r 10000) can take a few seconds — watch the bar to know it's still running.",
+  },
 };
 
 const FIELD_COLORS: Record<FieldKey, string> = {
@@ -56,6 +67,8 @@ const FIELD_COLORS: Record<FieldKey, string> = {
   search_radius:  "ring-purple-400 bg-purple-400/10",
   cluster_radius: "ring-pink-400 bg-pink-400/10",
   steps:          "ring-primary bg-primary/10",
+  sort:           "ring-teal-400 bg-teal-400/10",
+  progress:       "ring-slate-400 bg-slate-400/10",
 };
 
 const DOT_COLORS: Record<FieldKey, string> = {
@@ -67,6 +80,8 @@ const DOT_COLORS: Record<FieldKey, string> = {
   search_radius:  "bg-purple-400",
   cluster_radius: "bg-pink-400",
   steps:          "bg-primary",
+  sort:           "bg-teal-400",
+  progress:       "bg-slate-400",
 };
 
 function ClickZone({ fieldKey, active, onClick, children }: {
@@ -244,6 +259,36 @@ export default function Tutorial({ onBack }: { onBack: () => void }) {
               <div className="bg-input/50 border border-border rounded-md px-3 py-2 text-xs text-muted-foreground/40">Block…</div>
               <div className="bg-input/50 border border-border rounded-md px-3 py-2 text-xs text-muted-foreground/40">Block…</div>
             </div>
+          </div>
+        </section>
+
+        {/* Output Options */}
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Output Options</h2>
+          <div className="bg-card border border-border rounded-lg p-4 flex flex-col gap-3">
+            <ClickZone fieldKey="sort" active={active === "sort"} onClick={toggle}>
+              <div className="p-2 flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Dot fieldKey="sort" />
+                  <label className="text-xs font-medium text-muted-foreground">Sort Results <code className="text-xs text-muted-foreground/60">-O</code></label>
+                </div>
+                <div className="bg-input border border-border rounded-md px-3 py-2 text-sm text-muted-foreground/60 pointer-events-none flex items-center justify-between">
+                  Distance from center <span className="text-xs">▼</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Order results by x, z, or dist</p>
+              </div>
+            </ClickZone>
+            <ClickZone fieldKey="progress" active={active === "progress"} onClick={toggle}>
+              <div className="p-2 flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Dot fieldKey="progress" />
+                  <label className="text-xs font-medium text-muted-foreground">Progress Bar</label>
+                </div>
+                <div className="bg-input border border-border rounded-md px-3 py-2 text-xs font-mono text-muted-foreground/60 pointer-events-none">
+                  [###########-------------------]  37%  128 hits found
+                </div>
+              </div>
+            </ClickZone>
           </div>
         </section>
 
