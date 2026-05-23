@@ -1,4 +1,4 @@
-# MC Cluster Finder UI
+# Relay Template Generator
 
 Web UI for [MC Block Finder](https://github.com/batthepig-two/MC-block-finder) — build copy-pasteable commands for the CLI tool.
 
